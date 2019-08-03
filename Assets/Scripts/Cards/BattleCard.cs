@@ -11,5 +11,23 @@ namespace BattleCards.Cards
 		[SerializeField] private int _range = 0;
 
 		[SerializeField] private TextMesh _powerText;
+
+		public int Row { get; set; }
+		public int Column { get; set; }
+
+		protected override void Awake()
+		{
+			base.Awake();
+			
+			if (_powerText != null)
+				_powerText.text = Power.ToString();
+		}
+
+		public void SetPower(int power)
+		{
+			_power = power;
+			if (_powerText != null)
+				_powerText.text = Power.ToString();
+		}
 	}
 }

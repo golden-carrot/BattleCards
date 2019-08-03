@@ -2,3 +2,6 @@
 *.sln
 Library/
 obj/Debug/
+.vs/
+Temp/
+Builds/

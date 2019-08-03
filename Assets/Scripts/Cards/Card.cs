@@ -11,5 +11,10 @@ namespace BattleCards.Cards
 
 		public List<CardAction> ActionList => _actionList;
 		[SerializeField] List<CardAction> _actionList;
+
+		protected virtual void Awake()
+		{
+
+		}
 	}
 }
