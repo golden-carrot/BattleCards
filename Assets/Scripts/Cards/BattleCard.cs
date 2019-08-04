@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using static BattleCards.Battle.CardBattleFunctions;
 
 namespace BattleCards.Cards
 {
@@ -14,6 +15,7 @@ namespace BattleCards.Cards
 
 		public int Row { get; set; }
 		public int Column { get; set; }
+		public Direction Direction { get; set; }
 
 		protected override void Awake()
 		{

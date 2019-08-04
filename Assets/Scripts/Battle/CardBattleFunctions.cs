@@ -8,27 +8,36 @@ namespace BattleCards.Battle
 {
 	public static class CardBattleFunctions
 	{
+		public enum Direction
+		{
+			North,
+			South,
+			East,
+			West,
+		}
+
 		private class BattleGroup
 		{
-			public BattleCard ACard;
-			public BattleCard BCard;
-
-			public int Row => ACard.Row;
-			public int Column => BCard.Row;
+			public BattleCard Attacker;
+			public int AttackerPower;
+			public int AttackerRange;
+			public Direction AttackerDirection;
+			
+			public int Row => Attacker.Row;
+			public int Column => Attacker.Row;
 
 			public bool CheckPosition(int row, int column)
 			{
 				var value = false;
-				if (ACard != null)
-					value = ACard.Row == row && ACard.Column == column;
-				if (BCard != null)
-					value &= BCard.Row == row && BCard.Column == column;
+				if (Attacker != null)
+					value = Attacker.Row == row && Attacker.Column == column;
 
 				return value;
 			}
 		}
 
 		private static List<BattleGroup> _battleGroup;
+
 		private static void ResetBattlePair()
 		{
 			if (_battleGroup == null)
@@ -41,50 +50,61 @@ namespace BattleCards.Battle
 		{
 			if(_battleGroup.Any(pair => pair.CheckPosition(card.Row, card.Column)))
 			{
-				var pair = _battleGroup.First<BattleGroup>(p => p.CheckPosition(card.Row, card.Column));
-				pair.BCard = card;
+				return;
 			}
 			else
 			{
 				_battleGroup.Add(new BattleGroup()
 				{
-					ACard = card,
+					Attacker = card,
+					AttackerPower = card.Power,
+					AttackerRange = card.Range,
+					AttackerDirection = card.Direction,
 				});
 			}
 		}
 
-		public static void Battle(List<BattleCard> myCards, List<BattleCard> otherCards)
+		public static void Battle()
 		{
 			ResetBattlePair();
-			myCards.ForEach(card =>
-			{
-				AddCardToPair(card);
-			});
-			otherCards.ForEach(card =>
+			Field.FieldCards.ForEach(card =>
 			{
 				AddCardToPair(card);
 			});
 
 			PlayBattleGroup();
+			ResultBattle();
 		}
 
 		private static void PlayBattleGroup()
 		{
 			foreach(var bg in _battleGroup)
 			{
-				var ACard = bg.ACard;
-				var BCard = bg.BCard;
+				var victims = new List<BattleCard>();
+				if (bg.AttackerDirection == Direction.North)
+				{
+					victims.Add(Field.GetCard(bg.Attacker.Row - bg.AttackerRange, bg.Attacker.Column));
+				} else if (bg.AttackerDirection == Direction.South)
+				{
+					victims.Add(Field.GetCard(bg.Attacker.Row + bg.AttackerRange, bg.Attacker.Column));
+				}
 
-				var tempACardPower = ACard.Power;
-				var tempBCardPower = BCard.Power;
+				foreach(var victim in victims)
+				{
+					victim?.SetPower(victim.Power - bg.AttackerPower);
+				}
+			}
+		}
 
-				ACard.SetPower(ACard.Power - tempBCardPower);
-				BCard.SetPower(BCard.Power - tempACardPower);
-
-				if (ACard.Power <= 0)
-					GameObject.DestroyImmediate(ACard.gameObject);
-				if (BCard.Power <= 0)
-					GameObject.DestroyImmediate(BCard.gameObject);
+		private static void ResultBattle()
+		{
+			foreach (var bg in _battleGroup)
+			{
+				if(bg.Attacker.Power <= 0)
+				{
+					Field.RemoveCard(bg.Attacker.Row, bg.Attacker.Column);
+					GameObject.DestroyImmediate(bg.Attacker.gameObject);
+				}
 			}
 		}
 	}

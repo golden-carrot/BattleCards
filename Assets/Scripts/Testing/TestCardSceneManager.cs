@@ -1,17 +1,16 @@
 ﻿using BattleCards.Battle;
 using BattleCards.Cards;
+using BattleCards.System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace BattleCards.Testing
 {
-	public class TestCardSceneManager : MonoBehaviour
+	public partial class TestCardSceneManager : MonoBehaviour
 	{
 		[SerializeField] private UnityEngine.UI.Dropdown _otherDropdown;
 		[SerializeField] private UnityEngine.UI.Dropdown _myDropdown;
-		[SerializeField] private Transform _otherPivot;
-		[SerializeField] private Transform _myPivot;
 
 		private GameObject _otherCardInstance;
 		private GameObject _myCardInstance;
@@ -31,35 +30,18 @@ namespace BattleCards.Testing
 				_myDropdown.AddOptions(new List<string>() { "None" });
 				_myDropdown.AddOptions(battleCards.Select(Card => Card.Id).ToList());
 			}
-		}
 
-		public void OnSelectedOtherDropdown()
-		{
-			var selectedId = _otherDropdown.options[_otherDropdown.value].text;
-
-			SetCardInstance(selectedId, _otherPivot, ref _otherCardInstance);
-		}
-
-		public void OnSelectedMyDropdown()
-		{
-			var selectedId = _myDropdown.options[_myDropdown.value].text;
-
-			SetCardInstance(selectedId, _myPivot, ref _myCardInstance);
+			Field.Init();
 		}
 
 		public void OnClickBattleButton()
 		{
-			CardBattleFunctions.Battle(new List<BattleCard>() { _myCardInstance.GetComponent<BattleCard>() }, new List<BattleCard>() { _otherCardInstance.GetComponent<BattleCard>() });
+			CardBattleFunctions.Battle();
 		}
 
 		public void OnClickExitButton()
 		{
 			Application.Quit();
-		}
-
-		public void OnClickBlankSpace()
-		{
-
 		}
 
 		private void SetCardInstance(string id, Transform pivot, ref GameObject prevInstance)
