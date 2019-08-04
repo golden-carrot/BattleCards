@@ -12,8 +12,8 @@ namespace BattleCards.System
 		public int Column => _column;
 		[SerializeField] private int _column;
 
-		public Direction Direction => _direction;
-		[SerializeField] private Direction _direction;
+		public Team Direction => _direction;
+		[SerializeField] private Team _direction;
 
 		public void SetPosition(int row, int column)
 		{

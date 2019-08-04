@@ -8,12 +8,10 @@ namespace BattleCards.Battle
 {
 	public static class CardBattleFunctions
 	{
-		public enum Direction
+		public enum Team
 		{
-			North,
-			South,
-			East,
-			West,
+			My,
+			Other,
 		}
 
 		private class BattleGroup
@@ -21,7 +19,7 @@ namespace BattleCards.Battle
 			public BattleCard Attacker;
 			public int AttackerPower;
 			public int AttackerRange;
-			public Direction AttackerDirection;
+			public Team AttackerDirection;
 			
 			public int Row => Attacker.Row;
 			public int Column => Attacker.Row;
@@ -59,7 +57,7 @@ namespace BattleCards.Battle
 					Attacker = card,
 					AttackerPower = card.Power,
 					AttackerRange = card.Range,
-					AttackerDirection = card.Direction,
+					AttackerDirection = card.Team,
 				});
 			}
 		}
@@ -81,12 +79,17 @@ namespace BattleCards.Battle
 			foreach(var bg in _battleGroup)
 			{
 				var victims = new List<BattleCard>();
-				if (bg.AttackerDirection == Direction.North)
+				if (bg.AttackerDirection == Team.My)
 				{
-					victims.Add(Field.GetCard(bg.Attacker.Row - bg.AttackerRange, bg.Attacker.Column));
-				} else if (bg.AttackerDirection == Direction.South)
+					var targetCard = Field.GetCard(bg.Attacker.Row - bg.AttackerRange, bg.Attacker.Column);
+					if (targetCard != null && targetCard.Team != bg.Attacker.Team)
+						victims.Add(targetCard);
+				}
+				else if (bg.AttackerDirection == Team.Other)
 				{
-					victims.Add(Field.GetCard(bg.Attacker.Row + bg.AttackerRange, bg.Attacker.Column));
+					var targetCard = Field.GetCard(bg.Attacker.Row + bg.AttackerRange, bg.Attacker.Column);
+					if (targetCard != null && targetCard.Team != bg.Attacker.Team)
+						victims.Add(targetCard);
 				}
 
 				foreach(var victim in victims)

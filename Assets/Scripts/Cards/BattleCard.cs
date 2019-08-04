@@ -15,7 +15,7 @@ namespace BattleCards.Cards
 
 		public int Row { get; set; }
 		public int Column { get; set; }
-		public Direction Direction { get; set; }
+		public Team Team { get; set; }
 
 		protected override void Awake()
 		{

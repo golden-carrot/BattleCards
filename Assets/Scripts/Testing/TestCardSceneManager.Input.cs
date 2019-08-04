@@ -54,7 +54,7 @@ namespace BattleCards.Testing
 			{
 				draggedBattleCard.Row = fieldGridItem.Row;
 				draggedBattleCard.Column = fieldGridItem.Column;
-				draggedBattleCard.Direction = fieldGridItem.Direction;
+				draggedBattleCard.Team = fieldGridItem.Direction;
 
 				Field.AddCard(draggedBattleCard);
 			}
