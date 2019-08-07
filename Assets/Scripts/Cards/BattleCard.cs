@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using static BattleCards.Battle.CardBattleFunctions;
 
 namespace BattleCards.Cards
@@ -17,6 +19,9 @@ namespace BattleCards.Cards
 		public int Range => _range;
 		[SerializeField] private int _range = 0;
 
+		public List<CardAbility.CardAbility> Ability => _ability;
+		private List<CardAbility.CardAbility> _ability;
+
 		public int Row { get; set; }
 		public int Column { get; set; }
 		public Team Team { get; set; }
@@ -26,6 +31,8 @@ namespace BattleCards.Cards
 		protected override void Awake()
 		{
 			base.Awake();
+
+			_ability = GetComponents<CardAbility.CardAbility>().ToList();
 
 			var cardFrameObject = Instantiate(Resources.Load<GameObject>("Etc/Card Frame"));
 			if (cardFrameObject == null) return;
@@ -38,6 +45,15 @@ namespace BattleCards.Cards
 			if (_cardFrame != null) {
 				_cardFrame.Init(this);
 			}
+		}
+
+		public void DecreaseHealth(int value)
+		{
+			_health -= value;
+			if (_health < 0)
+				_health = 0;
+
+			if (_cardFrame != null) _cardFrame.UpdateData();
 		}
 
 		public void SetPower(int power)

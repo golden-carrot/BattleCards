@@ -1,5 +1,4 @@
-﻿using BattleCards.Cards.CardActions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace BattleCards.Cards
@@ -9,8 +8,7 @@ namespace BattleCards.Cards
 		public string Id => _id;
 		[SerializeField] private string _id;
 
-		public List<CardAction> ActionList => _actionList;
-		[SerializeField] List<CardAction> _actionList;
+		private List<CardAbility.CardAbility> _actionList;
 
 		protected virtual void Awake()
 		{

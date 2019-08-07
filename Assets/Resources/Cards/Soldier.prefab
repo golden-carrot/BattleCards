@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2443377463043191977}
   - component: {fileID: 6115192631865271029}
   - component: {fileID: -8855243071987427931}
+  - component: {fileID: -101736193849462214}
   m_Layer: 0
   m_Name: Soldier
   m_TagString: Untagged
@@ -61,6 +62,18 @@ SortingGroup:
   m_SortingLayerID: -1618598979
   m_SortingLayer: 1
   m_SortingOrder: 0
+--- !u!114 &-101736193849462214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5075378130111282997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e2b4efc40652614081a143bc6fec75c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7967196516633632066
 GameObject:
   m_ObjectHideFlags: 0

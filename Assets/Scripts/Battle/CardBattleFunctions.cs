@@ -14,50 +14,51 @@ namespace BattleCards.Battle
 			Other,
 		}
 
-		private class BattleGroup
+		public class BattleFunctionData
 		{
-			public BattleCard Attacker;
-			public int AttackerPower;
-			public int AttackerRange;
-			public Team AttackerDirection;
+			public BattleCard Card;
+			public int Power;
+			public int Attack;
+			public int Health;
+			public int Range;
+			public Team Team;
 			
-			public int Row => Attacker.Row;
-			public int Column => Attacker.Row;
-
 			public bool CheckPosition(int row, int column)
 			{
 				var value = false;
-				if (Attacker != null)
-					value = Attacker.Row == row && Attacker.Column == column;
+				if (Card != null)
+					value = Card.Row == row && Card.Column == column;
 
 				return value;
 			}
 		}
 
-		private static List<BattleGroup> _battleGroup;
+		private static List<BattleFunctionData> _battleFunctionData;
 
 		private static void ResetBattlePair()
 		{
-			if (_battleGroup == null)
-				_battleGroup = new List<BattleGroup>();
+			if (_battleFunctionData == null)
+				_battleFunctionData = new List<BattleFunctionData>();
 
-			_battleGroup.Clear();
+			_battleFunctionData.Clear();
 		}
 
 		private static void AddCardToPair(BattleCard card)
 		{
-			if(_battleGroup.Any(pair => pair.CheckPosition(card.Row, card.Column)))
+			if(_battleFunctionData.Any(pair => pair.CheckPosition(card.Row, card.Column)))
 			{
 				return;
 			}
 			else
 			{
-				_battleGroup.Add(new BattleGroup()
+				_battleFunctionData.Add(new BattleFunctionData()
 				{
-					Attacker = card,
-					AttackerPower = card.Power,
-					AttackerRange = card.Range,
-					AttackerDirection = card.Team,
+					Card = card,
+					Power = card.Power,
+					Attack = card.Attack,
+					Health = card.Health,
+					Range = card.Range,
+					Team = card.Team,
 				});
 			}
 		}
@@ -76,37 +77,23 @@ namespace BattleCards.Battle
 
 		private static void PlayBattleGroup()
 		{
-			foreach(var bg in _battleGroup)
+			foreach(var data in _battleFunctionData)
 			{
-				var victims = new List<BattleCard>();
-				if (bg.AttackerDirection == Team.My)
+				data.Card.Ability.ForEach(ability =>
 				{
-					var targetCard = Field.GetCard(bg.Attacker.Row - bg.AttackerRange, bg.Attacker.Column);
-					if (targetCard != null && targetCard.Team != bg.Attacker.Team)
-						victims.Add(targetCard);
-				}
-				else if (bg.AttackerDirection == Team.Other)
-				{
-					var targetCard = Field.GetCard(bg.Attacker.Row + bg.AttackerRange, bg.Attacker.Column);
-					if (targetCard != null && targetCard.Team != bg.Attacker.Team)
-						victims.Add(targetCard);
-				}
-
-				foreach(var victim in victims)
-				{
-					victim?.SetPower(victim.Power - bg.AttackerPower);
-				}
+					ability.Action(data);
+				});
 			}
 		}
 
 		private static void ResultBattle()
 		{
-			foreach (var bg in _battleGroup)
+			foreach (var bg in _battleFunctionData)
 			{
-				if(bg.Attacker.Power <= 0)
+				if(bg.Card.Health <= 0)
 				{
-					Field.RemoveCard(bg.Attacker.Row, bg.Attacker.Column);
-					GameObject.DestroyImmediate(bg.Attacker.gameObject);
+					Field.RemoveCard(bg.Card.Row, bg.Card.Column);
+					GameObject.DestroyImmediate(bg.Card.gameObject);
 				}
 			}
 		}

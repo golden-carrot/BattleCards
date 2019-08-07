@@ -38,5 +38,23 @@ namespace BattleCards.Battle
 		{
 			return _fieldCards.FirstOrDefault(card => card.Row == row && card.Column == column);
 		}
+
+		public static BattleCard GetFirstCardInRange(int row, int column, int range, CardBattleFunctions.Team team)
+		{
+			if (range <= 0)
+				return null;
+
+			var deltaValue = team == CardBattleFunctions.Team.My ? -1 : 1;
+			var checkRange = 0;
+			BattleCard target = null;
+
+			do
+			{
+				++checkRange;
+				target = GetCard(row + deltaValue, column);
+			} while (target == null && checkRange <= range);
+
+			return target;
+		}
 	}
 }
