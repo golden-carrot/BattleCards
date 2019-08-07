@@ -9,10 +9,11 @@ namespace BattleCards.Testing
 {
 	public partial class TestCardSceneManager
 	{
-		private const float DRAG_SCALE = 0.2f;
+		[SerializeField] private float DRAG_SCALE = 1f;
 
 		private bool _isDragging = false;
 		private GameObject _dragCardInstance;
+
 		public void ShowDragCard(string id)
 		{
 			DestroyDragCard();

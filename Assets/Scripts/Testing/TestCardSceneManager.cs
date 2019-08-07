@@ -19,7 +19,7 @@ namespace BattleCards.Testing
 		{
 			Field.Init();
 
-			var cards = Resources.LoadAll<GameObject>("Cards");
+			var cards = Resources.LoadAll<BattleCard>("Cards");
 			if (cards != null && cards.Length > 0) {
 				var uiObject = Resources.Load<GameObject>("Cards/UI/UI_BattleCard");
 				if (uiObject != null) {
