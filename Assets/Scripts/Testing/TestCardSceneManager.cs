@@ -3,35 +3,39 @@ using BattleCards.Cards;
 using BattleCards.System;
 using System.Collections.Generic;
 using System.Linq;
+using BattleCards.UI;
 using UnityEngine;
 
 namespace BattleCards.Testing
 {
 	public partial class TestCardSceneManager : MonoBehaviour
 	{
-		[SerializeField] private UnityEngine.UI.Dropdown _otherDropdown;
-		[SerializeField] private UnityEngine.UI.Dropdown _myDropdown;
+		[SerializeField] private Transform _cardUIContext;
 
 		private GameObject _otherCardInstance;
 		private GameObject _myCardInstance;
 
 		private void Awake()
 		{
-			if(_otherDropdown != null && _myDropdown != null)
-			{
-				var battleCards = Resources.LoadAll<BattleCard>("Cards");
-
-				_otherDropdown.ClearOptions();
-				_myDropdown.ClearOptions();
-
-				_otherDropdown.AddOptions(new List<string>() { "None" });
-				_otherDropdown.AddOptions(battleCards.Select(Card => Card.Id).ToList());
-
-				_myDropdown.AddOptions(new List<string>() { "None" });
-				_myDropdown.AddOptions(battleCards.Select(Card => Card.Id).ToList());
-			}
-
 			Field.Init();
+
+			var cards = Resources.LoadAll<GameObject>("Cards");
+			if (cards != null && cards.Length > 0) {
+				var uiObject = Resources.Load<GameObject>("Cards/UI/UI_BattleCard");
+				if (uiObject != null) {
+					foreach (var card in cards) {
+						var instance = Instantiate(uiObject);
+						instance.transform.parent = _cardUIContext;
+						instance.transform.localPosition = Vector3.zero;
+						instance.transform.localScale = Vector3.one;
+						
+						var uiBattleCard = instance.GetComponent<UIBattleCard>();
+						if (uiBattleCard != null) {
+							uiBattleCard.Init(card.name);
+						}						
+					}
+				}
+			}
 		}
 
 		public void OnClickBattleButton()
