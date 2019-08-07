@@ -79,7 +79,7 @@ namespace BattleCards.Battle
 		{
 			foreach(var data in _battleFunctionData)
 			{
-				data.Card.Ability.ForEach(ability =>
+				data.Card.OnBattleAbility.ForEach(ability =>
 				{
 					ability.Action(data);
 				});
@@ -93,6 +93,10 @@ namespace BattleCards.Battle
 				if(bg.Card.Health <= 0)
 				{
 					Field.RemoveCard(bg.Card.Row, bg.Card.Column);
+					bg.Card.PostBattleAbility.ForEach(ability =>
+					{
+						ability.Action(bg);
+					});
 					GameObject.DestroyImmediate(bg.Card.gameObject);
 				}
 			}

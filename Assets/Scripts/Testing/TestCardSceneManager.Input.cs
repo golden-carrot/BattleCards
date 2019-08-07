@@ -44,12 +44,20 @@ namespace BattleCards.Testing
 				return;
 			}
 
+			var fieldGridItem = pivot.gameObject.GetComponent<FieldGridItem>();
+			if(Field.HasCard(fieldGridItem.Row, fieldGridItem.Column))
+			{
+				Destroy(_dragCardInstance);
+				_dragCardInstance = null;
+				_isDragging = false;
+				return;
+			}
+
 			_dragCardInstance.transform.parent = pivot;
 			_dragCardInstance.transform.localPosition = Vector3.zero;
 			_dragCardInstance.transform.localScale = Vector3.one;
 			_dragCardInstance.transform.localRotation = Quaternion.identity;
-
-			var fieldGridItem = pivot.gameObject.GetComponent<FieldGridItem>();
+			
 			var draggedBattleCard = _dragCardInstance.GetComponent<BattleCard>();
 			if (fieldGridItem != null && draggedBattleCard)
 			{

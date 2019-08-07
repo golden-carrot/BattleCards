@@ -19,8 +19,14 @@ namespace BattleCards.Cards
 		public int Range => _range;
 		[SerializeField] private int _range = 0;
 
-		public List<CardAbility.CardAbility> Ability => _ability;
-		private List<CardAbility.CardAbility> _ability;
+		public List<CardAbility.CardAbility> OnBattleAbility => _onBattleAbility;
+		private List<CardAbility.CardAbility> _onBattleAbility;
+
+		public List<CardAbility.CardAbility> PreBattleAbility => _preBattleAbility;
+		private List<CardAbility.CardAbility> _preBattleAbility;
+
+		public List<CardAbility.CardAbility> PostBattleAbility => _postBattleAbility;
+		private List<CardAbility.CardAbility> _postBattleAbility;
 
 		public int Row { get; set; }
 		public int Column { get; set; }
@@ -32,7 +38,25 @@ namespace BattleCards.Cards
 		{
 			base.Awake();
 
-			_ability = GetComponents<CardAbility.CardAbility>().ToList();
+			var ability = GetComponents<CardAbility.CardAbility>().ToList();
+			_onBattleAbility = new List<CardAbility.CardAbility>();
+			_preBattleAbility = new List<CardAbility.CardAbility>();
+			_postBattleAbility = new List<CardAbility.CardAbility>();
+			ability.ForEach(ab =>
+			{
+				switch (ab.AbilityActionType)
+				{
+					case CardAbility.CardAbility.AbilityType.OnBattleAction:
+						_onBattleAbility.Add(ab);
+						break;
+					case CardAbility.CardAbility.AbilityType.PreBattleAction:
+						_preBattleAbility.Add(ab);
+						break;
+					case CardAbility.CardAbility.AbilityType.PostBattleAction:
+						_postBattleAbility.Add(ab);
+						break;
+				}
+			});
 
 			var cardFrameObject = Instantiate(Resources.Load<GameObject>("Etc/Card Frame"));
 			if (cardFrameObject == null) return;

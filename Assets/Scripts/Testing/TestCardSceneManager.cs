@@ -11,6 +11,7 @@ namespace BattleCards.Testing
 	public partial class TestCardSceneManager : MonoBehaviour
 	{
 		[SerializeField] private Transform _cardUIContext;
+		[SerializeField] private FieldGrid _fieldGrid;
 
 		private GameObject _otherCardInstance;
 		private GameObject _myCardInstance;
