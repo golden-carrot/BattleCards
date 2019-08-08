@@ -2,11 +2,12 @@
 using BattleCards.Cards;
 using System.Collections.Generic;
 using System.Linq;
+using BattleCards.Cards.CardAbility;
 using UnityEngine;
 
 namespace BattleCards.Battle
 {
-	public static class CardBattleFunctions
+	public static partial class CardBattleFunctions
 	{
 		public enum Team
 		{
@@ -98,12 +99,16 @@ namespace BattleCards.Battle
 				{
 					ability.Action(data);
 				});
+
+				data.Card.UpdateData(data);
+
+				if (data.Card.Health > 0) continue;
 				
-				if(data.Card.Health <= 0)
-				{
-					Field.RemoveCard(data.Card.Row, data.Card.Column);
-					GameObject.DestroyImmediate(data.Card.gameObject);
-				}
+				var undestructableAbility = data.Card.GetComponent<UndestructableAbility>();
+				if (undestructableAbility != null) continue;
+				
+				Field.RemoveCard(data.Card.Row, data.Card.Column);
+				GameObject.DestroyImmediate(data.Card.gameObject);
 			}
 		}
 	}

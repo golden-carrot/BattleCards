@@ -60,7 +60,7 @@ namespace BattleCards.Battle
 				target = GetCard(tempRow, column);
 				if (target != null && target.Team == team)
 					target = null;
-			} while (target == null && checkRange <= range);
+			} while (target == null && checkRange < range);
 
 			return target;
 		}

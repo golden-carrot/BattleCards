@@ -18,9 +18,9 @@ namespace BattleCards.Cards {
             if (_battleCard == null)
                 return;
             
-            _powerText.text = _battleCard.Power.ToString();
-            _attackText.text = _battleCard.Attack.ToString();
-            _healthText.text = _battleCard.Health.ToString();
+            _powerText.text = _battleCard.Power > 0 ? _battleCard.Power.ToString() : "-";
+            _attackText.text = _battleCard.Attack > 0 ? _battleCard.Attack.ToString() : "-";
+            _healthText.text = _battleCard.Health > 0 ? _battleCard.Health.ToString() : "-";
         }
     }
 }

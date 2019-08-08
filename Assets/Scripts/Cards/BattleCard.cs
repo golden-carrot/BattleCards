@@ -71,19 +71,16 @@ namespace BattleCards.Cards
 			}
 		}
 
-		public void DecreaseHealth(int value)
-		{
-			_health -= value;
-			if (_health < 0)
-				_health = 0;
-
-			if (_cardFrame != null) _cardFrame.UpdateData();
-		}
-
-		public void SetPower(int power)
-		{
-			_power = power;
-			if (_cardFrame != null) _cardFrame.UpdateData();
+		public void UpdateData(BattleFunctionData data) {
+			Row = data.Row;
+			Column = data.Column;
+			_power = data.Power;
+			_attack = data.Attack;
+			_health = data.Health;
+			_range = data.Range;
+			Team = data.Team;
+			
+			_cardFrame.UpdateData();
 		}
 	}
 }

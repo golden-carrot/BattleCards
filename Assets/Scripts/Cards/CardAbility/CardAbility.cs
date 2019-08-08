@@ -9,7 +9,8 @@ namespace BattleCards.Cards.CardAbility
 		{
 			OnBattleAction,
 			PreBattleAction,
-			PostBattleAction
+			PostBattleAction,
+			Passive,
 		}
 
 		public AbilityType AbilityActionType => _abilityType;
