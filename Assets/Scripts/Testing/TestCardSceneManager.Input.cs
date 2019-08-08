@@ -12,13 +12,17 @@ namespace BattleCards.Testing
 		[SerializeField] private float DRAG_SCALE = 1f;
 
 		private bool _isDragging = false;
-		private GameObject _dragCardInstance;
+		private BattleCard _dragCardInstance;
 
 		public void ShowDragCard(string id)
 		{
 			DestroyDragCard();
 
-			_dragCardInstance = Instantiate(Resources.Load<GameObject>($"Cards/{id}"));
+			var dragCardInstance = Instantiate(Resources.Load<GameObject>($"Cards/{id}"));
+			if (dragCardInstance == null)
+				return;
+
+			_dragCardInstance = dragCardInstance.GetComponent<BattleCard>();
 			if(_dragCardInstance != null)
 			{
 				_isDragging = true;
@@ -36,9 +40,9 @@ namespace BattleCards.Testing
 			}
 		}
 
-		private void PlaceDragCardToPivot(Transform pivot)
+		private void PlaceDragCardToPivot(GameObject cardInstance, Transform pivot)
 		{
-			if(_dragCardInstance == null)
+			if(cardInstance == null)
 			{
 				Debug.LogError("Drag card object is null..!!");
 				return;
@@ -47,18 +51,18 @@ namespace BattleCards.Testing
 			var fieldGridItem = pivot.gameObject.GetComponent<FieldGridItem>();
 			if(Field.HasCard(fieldGridItem.Row, fieldGridItem.Column))
 			{
-				Destroy(_dragCardInstance);
-				_dragCardInstance = null;
+				Destroy(cardInstance);
+				cardInstance = null;
 				_isDragging = false;
 				return;
 			}
 
-			_dragCardInstance.transform.parent = pivot;
-			_dragCardInstance.transform.localPosition = Vector3.zero;
-			_dragCardInstance.transform.localScale = Vector3.one;
-			_dragCardInstance.transform.localRotation = Quaternion.identity;
+			cardInstance.transform.parent = pivot;
+			cardInstance.transform.localPosition = Vector3.zero;
+			cardInstance.transform.localScale = Vector3.one;
+			cardInstance.transform.localRotation = Quaternion.identity;
 			
-			var draggedBattleCard = _dragCardInstance.GetComponent<BattleCard>();
+			var draggedBattleCard = cardInstance.GetComponent<BattleCard>();
 			if (fieldGridItem != null && draggedBattleCard)
 			{
 				draggedBattleCard.Row = fieldGridItem.Row;
@@ -67,9 +71,6 @@ namespace BattleCards.Testing
 
 				Field.AddCard(draggedBattleCard);
 			}
-
-			_dragCardInstance = null;
-			_isDragging = false;
 		}
 
 		private void Update()
@@ -84,9 +85,10 @@ namespace BattleCards.Testing
 				{
 					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 					RaycastHit raycastHit;
-					if(Physics.Raycast(ray, out raycastHit, float.MaxValue))
-					{
-						PlaceDragCardToPivot(raycastHit.transform);
+					if(Physics.Raycast(ray, out raycastHit, float.MaxValue)) {
+						FieldGrid.Instance.PlaceCardInstance(_dragCardInstance, raycastHit.transform);
+						_dragCardInstance = null;
+						_isDragging = false;
 					}
 				}
 			}

@@ -1,17 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using BattleCards.Battle;
+﻿using BattleCards.Battle;
 using BattleCards.System;
 using UnityEngine;
 
 namespace BattleCards.Cards.CardAbility
 {
-	public class RemainCardAbility : CardAbility
+	public class RemainCardOnDeathAbility : CardAbility
 	{
 		[SerializeField] private string _targetCardId;
 
-		public override void Action(CardBattleFunctions.BattleFunctionData my)
-		{
+		public override void Action(CardBattleFunctions.BattleFunctionData my) {
+			if (my.Health != 0)
+				return;
+			
 			var _fieldGrid = FindObjectOfType<FieldGrid>();
 			var newInstance = Instantiate(Resources.Load<GameObject>($"Cards/{_targetCardId}"));
 			var pivot = _fieldGrid.GetPivot(my.Card.Row, my.Card.Column);

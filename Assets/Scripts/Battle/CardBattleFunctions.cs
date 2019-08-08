@@ -21,6 +21,8 @@ namespace BattleCards.Battle
 			public int Attack;
 			public int Health;
 			public int Range;
+			public int Row;
+			public int Column;
 			public Team Team;
 			
 			public bool CheckPosition(int row, int column)
@@ -59,6 +61,8 @@ namespace BattleCards.Battle
 					Health = card.Health,
 					Range = card.Range,
 					Team = card.Team,
+					Row = card.Row,
+					Column = card.Column,
 				});
 			}
 		}
@@ -88,16 +92,17 @@ namespace BattleCards.Battle
 
 		private static void ResultBattle()
 		{
-			foreach (var bg in _battleFunctionData)
+			foreach (var data in _battleFunctionData)
 			{
-				if(bg.Card.Health <= 0)
+				data.Card.PostBattleAbility.ForEach(ability =>
 				{
-					Field.RemoveCard(bg.Card.Row, bg.Card.Column);
-					bg.Card.PostBattleAbility.ForEach(ability =>
-					{
-						ability.Action(bg);
-					});
-					GameObject.DestroyImmediate(bg.Card.gameObject);
+					ability.Action(data);
+				});
+				
+				if(data.Card.Health <= 0)
+				{
+					Field.RemoveCard(data.Card.Row, data.Card.Column);
+					GameObject.DestroyImmediate(data.Card.gameObject);
 				}
 			}
 		}
