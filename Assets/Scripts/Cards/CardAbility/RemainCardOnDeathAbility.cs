@@ -1,4 +1,5 @@
-﻿using BattleCards.Battle;
+﻿using System.Collections;
+using BattleCards.Battle;
 using BattleCards.System;
 using UnityEngine;
 
@@ -8,9 +9,10 @@ namespace BattleCards.Cards.CardAbility
 	{
 		[SerializeField] private string _targetCardId;
 
-		public override void Action(CardBattleFunctions.BattleFunctionData my) {
+		public override IEnumerator Action(CardBattleFunctions.BattleFunctionData my)
+		{
 			if (my.Health != 0)
-				return;
+				yield break;
 			
 			var _fieldGrid = FindObjectOfType<FieldGrid>();
 			var newInstance = Instantiate(Resources.Load<GameObject>($"Cards/{_targetCardId}"));

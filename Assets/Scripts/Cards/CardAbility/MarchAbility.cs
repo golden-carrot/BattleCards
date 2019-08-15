@@ -1,10 +1,11 @@
-﻿using BattleCards.Battle;
+﻿using System.Collections;
+using BattleCards.Battle;
 using BattleCards.System;
 
 namespace BattleCards.Cards.CardAbility {
     public class MarchAbility : CardAbility
     {
-        public override void Action(CardBattleFunctions.BattleFunctionData my) {
+        public override IEnumerator Action(CardBattleFunctions.BattleFunctionData my) {
             var targetRow = 0;
             
             if (my.Team == CardBattleFunctions.Team.My) {
@@ -15,7 +16,7 @@ namespace BattleCards.Cards.CardAbility {
             }
 
             if (Field.HasCard(targetRow, my.Column))
-                return;
+	            yield break;
 
             my.Row = targetRow;
             FieldGrid.Instance.MoveCardInstance(my.Card, my.Row, my.Column);

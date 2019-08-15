@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using static BattleCards.Battle.CardBattleFunctions;
 
 namespace BattleCards.Cards.CardAbility
@@ -15,6 +16,6 @@ namespace BattleCards.Cards.CardAbility
 
 		public AbilityType AbilityActionType => _abilityType;
 		[SerializeField] protected AbilityType _abilityType;
-		abstract public void Action(BattleFunctionData my);
+		abstract public IEnumerator Action(BattleFunctionData my);
 	}
 }

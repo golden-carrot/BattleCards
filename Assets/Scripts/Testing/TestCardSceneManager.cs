@@ -41,7 +41,7 @@ namespace BattleCards.Testing
 
 		public void OnClickBattleButton()
 		{
-			CardBattleFunctions.Battle();
+			CardBattleFunctions.Instance.Battle();
 		}
 
 		public void OnClickExitButton()

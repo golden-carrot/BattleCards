@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using static BattleCards.Battle.CardBattleFunctions;
@@ -18,6 +19,8 @@ namespace BattleCards.Cards
 
 		public int Range => _range;
 		[SerializeField] private int _range = 0;
+
+		[SerializeField] private Animator _animator;
 
 		public List<CardAbility.CardAbility> OnBattleAbility => _onBattleAbility;
 		private List<CardAbility.CardAbility> _onBattleAbility;
@@ -61,7 +64,7 @@ namespace BattleCards.Cards
 			var cardFrameObject = Instantiate(Resources.Load<GameObject>("Etc/Card Frame"));
 			if (cardFrameObject == null) return;
 
-			cardFrameObject.transform.parent = this.transform;
+			cardFrameObject.transform.parent = _animator != null ? _animator.gameObject.transform : this.transform;
 			cardFrameObject.transform.localPosition = Vector3.zero;
 			cardFrameObject.transform.localScale = Vector3.one;
 			
@@ -81,6 +84,25 @@ namespace BattleCards.Cards
 			Team = data.Team;
 			
 			_cardFrame.UpdateData();
+		}
+
+		public IEnumerator PlayAttackAnimation(Team team)
+		{
+			if (_animator == null)
+				yield break;
+
+			if(team == Team.My)
+				_animator.Play("Attack_Up");
+			else
+				_animator.Play("Attack_Down");
+			yield return new WaitForSeconds(GetCurrentAnimationLength());
+		}
+
+		private float GetCurrentAnimationLength()
+		{
+			_animator.Update(float.Epsilon);
+			var info = _animator.GetCurrentAnimatorStateInfo(0);
+			return info.length;
 		}
 	}
 }

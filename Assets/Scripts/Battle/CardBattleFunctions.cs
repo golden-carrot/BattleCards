@@ -1,13 +1,15 @@
 ﻿
+using System.Collections;
 using BattleCards.Cards;
 using System.Collections.Generic;
 using System.Linq;
 using BattleCards.Cards.CardAbility;
+using BattleCards.System;
 using UnityEngine;
 
 namespace BattleCards.Battle
 {
-	public static partial class CardBattleFunctions
+	public partial class CardBattleFunctions : Singleton<CardBattleFunctions>
 	{
 		public enum Team
 		{
@@ -36,9 +38,10 @@ namespace BattleCards.Battle
 			}
 		}
 
-		private static List<BattleFunctionData> _battleFunctionData;
+		private List<BattleFunctionData> _battleFunctionData;
+		private Coroutine _battleCoroutine;
 
-		private static void ResetBattlePair()
+		private void ResetBattlePair()
 		{
 			if (_battleFunctionData == null)
 				_battleFunctionData = new List<BattleFunctionData>();
@@ -46,7 +49,7 @@ namespace BattleCards.Battle
 			_battleFunctionData.Clear();
 		}
 
-		private static void AddCardToPair(BattleCard card)
+		private void AddCardToPair(BattleCard card)
 		{
 			if(_battleFunctionData.Any(pair => pair.CheckPosition(card.Row, card.Column)))
 			{
@@ -68,7 +71,7 @@ namespace BattleCards.Battle
 			}
 		}
 
-		public static void Battle()
+		public void Battle()
 		{
 			ResetBattlePair();
 			Field.FieldCards.ForEach(card =>
@@ -76,29 +79,39 @@ namespace BattleCards.Battle
 				AddCardToPair(card);
 			});
 
-			PlayBattleGroup();
-			ResultBattle();
+			if (_battleCoroutine != null)
+			{
+				StopCoroutine(_battleCoroutine);
+				_battleCoroutine = null;
+			}
+			_battleCoroutine = StartCoroutine(BattleIteration());
 		}
 
-		private static void PlayBattleGroup()
+		private IEnumerator BattleIteration()
+		{
+			yield return PlayBattleGroup();
+			yield return ResultBattle();
+		}
+
+		private IEnumerator PlayBattleGroup()
 		{
 			foreach(var data in _battleFunctionData)
 			{
-				data.Card.OnBattleAbility.ForEach(ability =>
+				foreach (var ability in data.Card.OnBattleAbility)
 				{
-					ability.Action(data);
-				});
+					yield return ability.Action(data);
+				}
 			}
 		}
 
-		private static void ResultBattle()
+		private IEnumerator ResultBattle()
 		{
 			foreach (var data in _battleFunctionData)
 			{
-				data.Card.PostBattleAbility.ForEach(ability =>
+				foreach (var ability in data.Card.PostBattleAbility)
 				{
-					ability.Action(data);
-				});
+					yield return ability.Action(data);
+				}
 
 				data.Card.UpdateData(data);
 
